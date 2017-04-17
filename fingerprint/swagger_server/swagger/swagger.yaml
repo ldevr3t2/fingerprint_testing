@@ -1,0 +1,55 @@
+---
+swagger: "2.0"
+info:
+  description: "An Api using for music recognition and recommendation"
+  version: "0.0.1"
+  title: "Musica"
+host: "0.0.0.0:8080"
+basePath: "/team2"
+schemes:
+- "http"
+- "https"
+consumes:
+- "application/json"
+produces:
+- "application/json"
+paths:
+  /fingerprint:
+    get:
+      description: "Returns info on the problem"
+      operationId: "fingerprint_get"
+      parameters:
+      - name: "music_buffer"
+        in: "query"
+        description: "Size of array"
+        required: true
+        type: "string"
+        format: "string"
+      responses:
+        200:
+          description: "Music is found"
+          schema:
+            type: "array"
+            title: "ArrayOfPersons"
+            items:
+              $ref: "#/definitions/Info"
+        400:
+          description: "Bad request"
+        404:
+          description: "Music not found"
+        default:
+          description: "unexpected error"
+      x-swagger-router-controller: "swagger_server.controllers.default_controller"
+definitions:
+  Artist:
+    properties:
+      artist:
+        type: "string"
+  Info:
+    properties:
+      title:
+        type: "string"
+      artists:
+        type: "array"
+        items:
+          $ref: "#/definitions/Artist"
