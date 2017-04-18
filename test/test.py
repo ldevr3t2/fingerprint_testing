@@ -16,7 +16,7 @@ def getbuffer(filename):
     params = {
         'music_buffer': temp
     }
-    r = requests.get('http://localhost:5000/team2/fingerprint', params=params)
+    r = requests.get('http://0.0.0.0:5000/team2/fingerprint', params=params)
     return r.text
 
 class Test(unittest.TestCase):
