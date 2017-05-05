@@ -11,12 +11,31 @@ def getbuffer(filename):
     if filename.endswith('.wav'):
         buf = buf[1024000:192000+1024001]
 
+    # buf type - bytes
+    # 1. using base64 encode buf data
+    # 2. decode previous encoded data
+    # 3. send get request
+    #
+    # param format
+    # params = {
+    #   'music_buffer': buf
+    # }
+    
+    headers = {
+	"Accept": "application/json", \
+	"Content-Type": "application/json"
+    }
+
     temp = base64.b64encode(buf).decode()
+    #print(type(base64.b64encode(buf)))
+    #print(base64.b64encode(buf))
     myfile.close() 
-    params = {
+    data = {
         'music_buffer': temp
     }
-    r = requests.get('http://0.0.0.0:5000/team2/fingerprint', params=params)
+    r = requests.post('http://0.0.0.0:5000/team2/fingerprint',   \
+            data=json.dumps(data), headers=headers)
+    
     return r.text
 
 class Test(unittest.TestCase):
@@ -60,8 +79,8 @@ class Test(unittest.TestCase):
                     "title": "Wonderland"
                 } 
             ]
-            ans_list =  eval(ans)
-            self.assertTrue(correct[0]['title'] is ans_list[0]['title'])
+            ans_list = json.loads(ans)
+            self.assertEqual(correct[0]['title'], ans_list['title'])
             
 
 if __name__ == '__main__':

@@ -4,7 +4,6 @@ info:
   description: "An Api using for music recognition and recommendation"
   version: "0.0.1"
   title: "Musica"
-host: "0.0.0.0:8080"
 basePath: "/team2"
 schemes:
 - "http"
@@ -15,16 +14,20 @@ produces:
 - "application/json"
 paths:
   /fingerprint:
-    get:
+    post:
       description: "Returns info on the problem"
       operationId: "fingerprint_get"
       parameters:
       - name: "music_buffer"
-        in: "query"
+        in: "body"
         description: "Size of array"
         required: true
-        type: "string"
-        format: "string"
+        # type: string
+        schema:
+          type: object
+          properties:
+            music_buf:
+              type: string
       responses:
         200:
           description: "Music is found"

@@ -17,9 +17,10 @@ from ..util import deserialize_date, deserialize_datetime
 '''
     audio identifier
 '''
+
 audio_identifier_host = 'identify-us-west-2.acrcloud.com'
-audio_identifier_access_key = '752fc37a314b655ac215d58d45943a0c'
-audio_identifier_access_secret = 'Y4w6rRa86YdrjlL1oxeRLqLgryPWyzMeoYmTTWe1'
+audio_identifier_access_key = 'b4c5b74bc94eede0469ea9c1008e9631'
+audio_identifier_access_secret = 'LBagXQPL8YWTVKwJjguRV8AgZVkBG3vLz26otgZy'
 
 
 def audio_check(file_buffer):
@@ -43,7 +44,6 @@ def audio_check(file_buffer):
         metadata =res_dict["metadata"]
         metadata_music_list = metadata["music"]
         check_answer = {}
-        answer = []
         for i in range (0, len(metadata_music_list)):
             title = metadata_music_list[i]["title"]
             artists = metadata_music_list[i]["artists"] 
@@ -55,16 +55,13 @@ def audio_check(file_buffer):
                         sort_keys=True).encode()).hexdigest()
             if check_answer.get(hashed_val) == None:
                 check_answer[hashed_val] = i
-                answer.append(song)
+                answer = song
         return answer
     else:
         status_msg = res_dict["status"]["msg"]
-        answer = [] 
         err = {
             'error': status_msg
         }
-        answer.append(err)
-        print(answer)
         return err
 
 def fingerprint_get(music_buffer):
@@ -77,6 +74,27 @@ def fingerprint_get(music_buffer):
     :rtype: List[Info]
     """
     #to_byte = music_buffer.encode()
-    answer = audio_check(base64.b64decode(music_buffer.encode()))
-    print(answer)
-    return answer
+    print("data")
+    print(music_buffer)
+    try:
+        if connexion.request.is_json:
+            input_JSON = connexion.request.get_json()
+            music_buffer = input_JSON['music_buffer']
+        else:
+            raise ValueError('Created error')
+    except Exception as e:
+        return input_JSON, 400
+    try:
+        answer = audio_check(base64.b64decode(music_buffer.encode()))
+        return answer
+    except Exception as e:
+        # status_msg = "bad data type"
+        status_msg = str(e)
+        err = {
+            'error': status_msg
+        }
+        answer = [] 
+        answer.append(err)
+        return answer
+        
+
